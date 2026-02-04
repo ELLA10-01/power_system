@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PowerFlow Pro: System Analysis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Power System</span>
+            </div>
+            <nav class="tab-header">
+                <button class="tab-link active" onclick="openTab(event, 'BranchTab')">
+                    <span class="tab-num">01</span> Y-Bus & Z-Bus
+                </button>
+                <button class="tab-link" onclick="openTab(event, 'GaussTab')">
+                    <span class="tab-num">02</span> Gauss-Seidel
+                </button>
+                <button class="tab-link" onclick="openTab(event, 'NewtonTab')">
+                    <span class="tab-num">03</span> Newton-Raphson
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-reset" onclick="clearAllData()">Reset All Data</button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div id="BranchTab" class="tab-content active">
+                <fieldset class="settings-group">
+                    <legend>System Settings</legend>
+                    <div class="setting-row">
+                        <label>Input Type:</label>
+                        <input type="radio" name="dataType" id="puData" checked> <label for="puData">PU</label>
+                        <input type="radio" name="dataType" id="actualData"> <label for="actualData">Actual</label>
+                    </div>
+                    <div class="setting-row">
+                        <label>Base MVA:</label> <input type="number" id="baseMVA" value="100">
+                        <label>Base Voltage:</label> <input type="number" id="baseKV" value="1">
+                    </div>
+                </fieldset>
+
+                <fieldset class="input-group">
+                    <legend>Branch Data Input</legend>
+                    <table id="branchTable">
+                        <thead>
+                            <tr>
+                                <th>#</th><th>From Bus</th><th>To Bus</th><th>Voltage</th><th>Type</th><th>R</th><th>X</th><th>B</th>
+                            </tr>
+                        </thead>
+                        <tbody id="branchBody"></tbody>
+                    </table>
+                    <div class="action-buttons">
+                        <button onclick="addRow('branchBody')">Add Branch</button>
+                        <button class="btn-calc" onclick="calculateYBus()">Calculate Y-Bus</button>
+                        <button class="btn-calc" onclick="calculateZBus()">Calculate Z-Bus</button>
+                    </div>
+                </fieldset>
+                <pre id="ybusOutput" class="matrix-box">--- Y-BUS MATRIX ---</pre>
+            </div>
+
+            <div id="GaussTab" class="tab-content">
+                <fieldset class="settings-group">
+                    <legend>GS Parameters</legend>
+                    <label>Max Iter:</label> <input type="number" id="gsMaxIter" value="100">
+                    <label>Tolerance:</label> <input type="number" id="gsTol" value="0.00001">
+                </fieldset>
+                <fieldset class="input-group">
+                    <legend>Bus Data Input</legend>
+                    <table id="gsTable">
+                        <thead>
+                            <tr>
+                                <th>Bus</th><th>Voltage</th><th>Type</th><th>P (pu)</th><th>Q (pu)</th><th>V < Deg</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gsBody"></tbody>
+                    </table>
+                    <div class="action-buttons">
+                        <button onclick="addRow('gsBody', true)">Add Bus</button>
+                        <button onclick="populateBusIDs()">Populate Bus IDs</button>
+                        <button class="btn-calc" onclick="runGaussSeidel()">Run Gauss-Seidel</button>
+                    </div>
+                </fieldset>
+                <pre id="gsOutput" class="matrix-box"></pre>
+            </div>
+
+            <div id="NewtonTab" class="tab-content">
+                <fieldset class="settings-group">
+                    <legend>NR Parameters</legend>
+                    <label>Max Iter:</label> <input type="number" id="nrMaxIter" value="20">
+                    <label>Tolerance:</label> <input type="number" id="nrTol" value="0.0001">
+                </fieldset>
+                <fieldset class="input-group">
+                    <legend>Bus Data Input</legend>
+                    <table id="nrTable">
+                        <thead>
+                            <tr>
+                                <th>Bus</th><th>Voltage</th><th>Type</th><th>P (pu)</th><th>Q (pu)</th><th>V < Deg</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nrBody"></tbody>
+                    </table>
+                    <div class="action-buttons">
+                        <button onclick="addRow('nrBody', true)">Add Bus</button>
+                        <button onclick="populateNRBusIDs()">Populate Bus IDs</button>
+                        <button class="btn-calc" onclick="runNewtonRaphson()">Run Newton-Raphson</button>
+                    </div>
+                </fieldset>
+                <pre id="nrOutput" class="matrix-box"></pre>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+</body>
+</html>
